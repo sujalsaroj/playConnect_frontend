@@ -61,8 +61,8 @@ function Testinomial() {
               </div>
             </div>
             <p className="text-gray-700 mb-3">
-              “The split payment and slot sharing feature is a game-changer for
-              friend groups!”
+              Booking turfs with friends is fun and easy! Great experience, will
+              definitely play again.
             </p>
             <div className="text-yellow-500 text-lg">★★★★★</div>
           </div>

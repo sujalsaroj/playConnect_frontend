@@ -2,24 +2,63 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 export default function Navbar() {
-  const [user, setUser] = useState(null);
+  // ✅ Initial state from localStorage for refresh persistence
+  const [user, setUser] = useState(() => {
+    const storedUser = localStorage.getItem("user");
+    return storedUser ? JSON.parse(storedUser) : null;
+  });
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem("user"));
-    setUser(storedUser);
+    const token = localStorage.getItem("token");
 
-    const handleStorageChange = () => {
-      const updatedUser = JSON.parse(localStorage.getItem("user"));
-      setUser(updatedUser);
+    const fetchUser = async () => {
+      if (!token) return;
+      try {
+        const res = await fetch("http://localhost:5000/api/me", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!res.ok) throw new Error("Failed to fetch user");
+        const data = await res.json();
+        const userData = {
+          ...data,
+          profilePic: data.profilePic
+            ? `http://localhost:5000${data.profilePic}`
+            : null,
+        };
+        setUser(userData);
+        localStorage.setItem("user", JSON.stringify(userData));
+      } catch (err) {
+        console.error(err);
+      }
     };
 
-    window.addEventListener("storage", handleStorageChange);
-    return () => window.removeEventListener("storage", handleStorageChange);
+    fetchUser();
+
+    // ✅ Listen for profile updates (Profile.jsx / Login.jsx)
+    const handleUserUpdate = (e) => {
+      const updatedUser = {
+        ...e.detail,
+        profilePic: e.detail.profilePic
+          ? e.detail.profilePic.startsWith("http")
+            ? e.detail.profilePic
+            : `http://localhost:5000${e.detail.profilePic}`
+          : null,
+      };
+      setUser(updatedUser);
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+    };
+
+    window.addEventListener("userUpdated", handleUserUpdate);
+
+    return () => {
+      window.removeEventListener("userUpdated", handleUserUpdate);
+    };
   }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("user");
+    localStorage.removeItem("token");
     setUser(null);
     window.location.href = "/";
   };
@@ -27,8 +66,9 @@ export default function Navbar() {
   return (
     <nav className="bg-green-900 text-white">
       <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+        {/* Mobile Hamburger */}
         <button
-          className="text-white focus:outline-none"
+          className="text-white md:hidden focus:outline-none"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
         >
           <svg
@@ -45,18 +85,16 @@ export default function Navbar() {
             />
           </svg>
         </button>
-        {/* Left: Logo */}
+
+        {/* Logo */}
         <Link to="/" className="text-xl font-bold">
           PlayConnect
         </Link>
 
-        {/* Center: Hamburger for Mobile */}
-        <div className="flex md:hidden items-center gap-2"></div>
-
-        {/* Right: Auth Buttons (Always visible) */}
+        {/* Nav Links & Auth/User */}
         <div className="flex items-center space-x-4">
           <div className="hidden md:flex space-x-6 text-xl">
-            <NavLinks />
+            <NavLinks closeMenu={() => {}} />
           </div>
           {user ? (
             <UserDropdown user={user} onLogout={handleLogout} />
@@ -66,36 +104,48 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Menu Links */}
+      {/* Mobile Menu */}
       {mobileMenuOpen && (
         <div className="md:hidden px-4 pb-4 space-y-2">
-          <NavLinks mobile />
+          <NavLinks mobile closeMenu={() => setMobileMenuOpen(false)} />
+          {user ? (
+            <UserDropdown
+              user={user}
+              onLogout={() => {
+                handleLogout();
+                setMobileMenuOpen(false);
+              }}
+              mobile
+            />
+          ) : (
+            <AuthLinks />
+          )}
         </div>
       )}
     </nav>
   );
 }
 
-function NavLinks({ mobile = false }) {
-  const baseClasses = "block py-2 px-3";
-  const hover = "hover:bg-green-800 rounded";
-  const className = `${baseClasses} ${hover} ${mobile ? "text-lg" : ""}`;
+function NavLinks({ mobile = false, closeMenu }) {
+  const className = `block py-2 px-3 hover:bg-green-800 rounded ${
+    mobile ? "text-lg" : ""
+  }`;
+  const handleClick = () => {
+    if (closeMenu) closeMenu();
+  };
 
   return (
     <>
-      <Link to="/home" className={className}>
+      <Link to="/home" className={className} onClick={handleClick}>
         Home
       </Link>
-      <Link to="/dashboard-player" className={className}>
+      <Link to="/dashboard-player" className={className} onClick={handleClick}>
         Book Turf
       </Link>
-      <Link to="/dashboard-turf-owner" className={className}>
-        My Turf
-      </Link>
-      <Link to="/about" className={className}>
+      <Link to="/about" className={className} onClick={handleClick}>
         About
       </Link>
-      <Link to="/contact-us" className={className}>
+      <Link to="/contact-us" className={className} onClick={handleClick}>
         Contact
       </Link>
     </>
@@ -121,36 +171,59 @@ function AuthLinks() {
   );
 }
 
-function UserDropdown({ user, onLogout }) {
-  return (
-    <div className="relative group">
-      <Link to="/profile" className="flex items-center gap-2">
-        <img
-          src={user.photoURL || "/default-avatar.jpg"}
-          alt="Profile"
-          width={36}
-          height={36}
-          className="rounded-full border-2 border-white hover:scale-105 transition"
-        />
-        <span className="hidden md:inline font-medium">
-          {user.displayName || user.email.split("@")[0]}
-        </span>
-      </Link>
+function UserDropdown({ user, onLogout, mobile = false }) {
+  const [open, setOpen] = useState(false);
 
-      <div className="absolute right-0 mt-2 w-48 bg-white text-green-900 rounded-md shadow-lg py-1 hidden group-hover:block z-50">
-        <Link to="/profile" className="block px-4 py-2 hover:bg-green-100">
-          My Profile
-        </Link>
-        <Link to="/my-booking" className="block px-4 py-2 hover:bg-green-100">
-          My Bookings
-        </Link>
-        <button
-          onClick={onLogout}
-          className="w-full text-left px-4 py-2 hover:bg-green-100 text-red-600"
+  const name = user.name || user.email.split("@")[0];
+  const firstLetter = name.charAt(0).toUpperCase();
+  const photoURL = user.profilePic || null;
+
+  return (
+    <div className="relative">
+      <button
+        className="flex items-center gap-2 focus:outline-none"
+        onClick={() => setOpen(!open)}
+      >
+        {photoURL ? (
+          <img
+            src={photoURL}
+            alt="Profile"
+            width={36}
+            height={36}
+            className="rounded-full border-2 border-white hover:scale-105 transition"
+          />
+        ) : (
+          <div className="rounded-full w-9 h-9 flex items-center justify-center text-white font-semibold bg-gray-500">
+            {firstLetter}
+          </div>
+        )}
+        <span
+          className={`${mobile ? "inline" : "hidden md:inline"} font-medium`}
         >
-          Logout
-        </button>
-      </div>
+          {name}
+        </span>
+      </button>
+
+      {open && (
+        <div className="absolute right-0 mt-2 w-48 bg-white text-green-900 rounded-md shadow-lg py-1 z-50">
+          <Link
+            to="/profile"
+            className="block px-4 py-2 hover:bg-green-100"
+            onClick={() => setOpen(false)}
+          >
+            My Profile
+          </Link>
+          <button
+            onClick={() => {
+              onLogout();
+              setOpen(false);
+            }}
+            className="w-full text-left px-4 py-2 hover:bg-green-100 text-red-600"
+          >
+            Logout
+          </button>
+        </div>
+      )}
     </div>
   );
 }

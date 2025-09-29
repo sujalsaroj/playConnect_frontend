@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import loaderGif from "../loader/loading.gif";
 const Register = () => {
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    password: "",
+    password: "", 
     confirmPassword: "",
     role: "player",
   });
@@ -14,13 +15,14 @@ const Register = () => {
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    console.log(formData);
   };
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
     setError("");
 
-    // Validation
+    // Basic validation
     if (
       !formData.name ||
       !formData.email ||
@@ -30,31 +32,48 @@ const Register = () => {
       setError("Please fill in all fields");
       return;
     }
-
     if (formData.password !== formData.confirmPassword) {
-      setError("Passwords do not match!");
+      setError("Passwords do not match");
       return;
     }
-
     if (formData.password.length < 6) {
       setError("Password should be at least 6 characters");
       return;
     }
+    setLoading(true);
+    try {
+      const res = await fetch("http://localhost:5000/api/register", {
+        method: "POST",
+        headers: {   "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          password: formData.password,
+          role: formData.role,
+        }),
+      });
+      setLoading(false);
+      const data = await res.json();
 
-    // Simulate successful registration
-    // In a real app, you would call your backend API here
-    const user = {
-      uid: `user-${Math.random().toString(36).substr(2, 9)}`,
-      displayName: formData.name,
-      email: formData.email,
-      role: formData.role,
-      photoURL: `https://ui-avatars.com/api/?name=${formData.name}&background=random`,
-    };
+      if (!res.ok) {
+        setError(data.message || "Registration failed");
+        return;
+      }
 
-    // Store user in localStorage
-    alert("Registration successful! Please login.");
-    navigate("/login");
+      alert("Registration successful! Please login.");
+      navigate("/login");
+    } catch (err) {
+      setError("Server not responding. Please try later.");
+      setLoading(false);
+    }
   };
+
+  if (loading)
+    return (
+      <div className="fixed inset-0 flex justify-center items-center bg-white z-50">
+        <img src={loaderGif} alt="Loading..." className="w-30 h-30" />
+      </div>
+    );
 
   return (
     <div className="min-h-screen flex justify-center items-center bg-gray-100">

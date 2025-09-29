@@ -1,6 +1,14 @@
 import heroBg from "../images/hero-bg.jpg";
 import Features from "./Feacture";
+
 function Hero() {
+  const HandleScroll = () => {
+    const exploreTurf = document.getElementsByClassName("mt-6")[0]; // pehla element select karo
+    if (exploreTurf) {
+      exploreTurf.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <section className="relative bg-gradient-to-r from-green-900 via-green-700 to-green-600 py-16 px-6 md:px-12 text-white overflow-hidden ">
       {/* Background pattern image */}
@@ -12,9 +20,9 @@ function Hero() {
         />
       </div>
 
-      {/* Content goes here */}
+      {/* Content */}
       <div className="relative z-10 text-center flex flex-col justify-center items-center h-full">
-        {/* Optional small badge */}
+        {/* Small badge */}
         <div className="bg-green-500/90 text-sm px-3 py-1 rounded-full uppercase tracking-wider font-semibold shadow-md mb-4">
           PlayConnect Platform
         </div>
@@ -30,12 +38,13 @@ function Hero() {
 
         {/* CTA Button */}
         <div className="mt-6">
-          <a
-            href="#find-turfs"
-            className="bg-white text-green-800 font-semibold px-6 py-3 rounded-full shadow hover:bg-green-100 transition duration-300"
+          <button
+            onClick={HandleScroll}
+            className="bg-white text-green-800 font-semibold px-6 py-3
+            rounded-full shadow hover:bg-green-100 transition duration-300"
           >
             Explore Turfs
-          </a>
+          </button>
         </div>
 
         {/* Features quick tags */}

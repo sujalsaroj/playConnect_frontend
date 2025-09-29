@@ -1,53 +1,91 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import loaderGif from "../loader/loading.gif";
 
 const Login = () => {
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    name: "",
     email: "",
     password: "",
-    role: "player",
   });
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
+    setLoading(true);
 
-    // Basic validation
     if (!formData.email || !formData.password) {
       setError("Please fill in all fields");
+      setLoading(false);
       return;
     }
 
-    // Simulate successful login
-    // In a real app, you would call your backend API here
-    const user = {
-      uid: `user-${Math.random().toString(36).substr(2, 9)}`,
-      displayName: formData.name.trim(), // ✅ use name from input
-      email: formData.email,
-      role: formData.role,
-      photoURL: `https://ui-avatars.com/api/?name=${formData.name.trim()}&background=random`,
-    };
+    try {
+      const res = await fetch("http://localhost:5000/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+        }),
+      });
 
-    // Store user in localStorage
-    localStorage.setItem("user", JSON.stringify(user));
+      const data = await res.json();
 
-    // Redirect based on role
-    if (formData.role === "owner") {
-      navigate("/owner-dashboard");
-    } else {
-      navigate("/");
+      if (!res.ok) {
+        setError(data.message || "Login failed");
+        setLoading(false);
+        return;
+      }
+
+      // ✅ Always ensure full URL for profilePic
+      const userData = {
+        ...data.user,
+        profilePic: data.user.profilePic
+          ? data.user.profilePic.startsWith("http")
+            ? data.user.profilePic
+            : `http://localhost:5000${data.user.profilePic}`
+          : null,
+      };
+
+      // Save token and updated user info
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(userData));
+
+      // ✅ Dispatch custom event to update Navbar immediately
+      window.dispatchEvent(
+        new CustomEvent("userUpdated", { detail: userData })
+      );
+
+      // Redirect based on role
+      if (userData.role === "owner") {
+        navigate("/dashboard-turf-owner");
+      } else if (userData.role === "player") {
+        navigate("/dashboard-player");
+      } else {
+        navigate("/");
+      }
+
+      setLoading(false);
+    } catch (err) {
+      setError("Server not responding. Please try again later.");
+      setLoading(false);
     }
-
-    // Refresh the page to update navbar
-    window.location.reload();
   };
+
+  if (loading) {
+    return (
+      <div className="fixed inset-0 flex justify-center items-center bg-white z-50">
+        <img src={loaderGif} alt="Loading..." className="w-30 h-30" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex justify-center items-center bg-gray-100">
@@ -62,17 +100,6 @@ const Login = () => {
             {error}
           </div>
         )}
-        <div className="mb-4">
-          <label className="block mb-2 text-sm font-medium">Name</label>
-          <input
-            type="name"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            required
-          />
-        </div>
 
         <div className="mb-4">
           <label className="block mb-2 text-sm font-medium">Email</label>
@@ -83,6 +110,7 @@ const Login = () => {
             onChange={handleChange}
             className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             required
+            autoComplete="email"
           />
         </div>
 
@@ -95,20 +123,8 @@ const Login = () => {
             onChange={handleChange}
             className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             required
+            autoComplete="current-password"
           />
-        </div>
-
-        <div className="mb-6">
-          <label className="block mb-2 text-sm font-medium">Login as:</label>
-          <select
-            name="role"
-            value={formData.role}
-            onChange={handleChange}
-            className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          >
-            <option value="player">Player</option>
-            <option value="owner">Turf Owner</option>
-          </select>
         </div>
 
         <button

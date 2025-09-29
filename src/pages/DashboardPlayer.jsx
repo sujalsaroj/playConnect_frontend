@@ -1,8 +1,32 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import loaderGif from "../loader/loading.gif"; // check spelling of file
 
 const DashboardPlayer = () => {
-  const playerName = "Sujal"; // Later replace with context/localStorage
+  const [playerName, setplayerName] = useState("");
+
+  const [loading, setLoading] = useState(true); // ✅ hook inside component
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user) {
+      setplayerName(user.name);
+    }
+  }, []);
+
+  // simulate loading for 2 seconds (example)
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 2000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="fixed inset-0 flex justify-center items-center bg-white z-50">
+        <img src={loaderGif} alt="Loading..." className="w-30 h-30" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
@@ -61,7 +85,20 @@ const DashboardPlayer = () => {
           </div>
         </div>
 
-        {/* ⚙️ Profile & Settings */}
+        {/* 📖 My Connections Section */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div className="bg-white shadow-md rounded-xl p-6 hover:shadow-lg transition">
+            <h2 className="text-xl font-semibold mb-2">📖 My Connections</h2>
+            <p className="text-gray-600">
+              View the connections you created or joined.
+            </p>
+            <Link to="/my-connections">
+              <button className="mt-4 bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700">
+                View Connections
+              </button>
+            </Link>
+          </div>
+        </div>
       </div>
     </div>
   );

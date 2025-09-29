@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-
+import loaderGif from "../loader/loading.gif";
 const RaiseConnection = () => {
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     sport: "",
     date: "",
@@ -14,20 +15,56 @@ const RaiseConnection = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Raised Connection:", formData); // Later: send to backend
-    alert("✅ Connection Raised Successfully!");
-    // Optionally reset form
-    setFormData({
-      sport: "",
-      date: "",
-      time: "",
-      playersNeeded: "",
-      turfLocation: "",
-      message: "",
-    });
+    setLoading(true);
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        setLoading(false);
+        return alert("⚠️ Please login first!");
+      }
+
+      const res = await fetch("http://localhost:5000/api/connections", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          turf: formData.turfLocation,
+          date: `${formData.date}T${formData.time}`,
+          maxPlayers: formData.playersNeeded,
+          sport: formData.sport,
+          message: formData.message,
+        }),
+      });
+      setLoading(false);
+      if (!res.ok) throw new Error("Failed to raise connection");
+      const data = await res.json();
+      alert("✅ Connection Raised Successfully!");
+
+      setFormData({
+        sport: "",
+        date: "",
+        time: "",
+        playersNeeded: "",
+        turfLocation: "",
+        message: "",
+      });
+    } catch (err) {
+      console.error(err);
+      alert("❌ Failed to raise connection");
+      setLoading(false);
+    }
   };
+
+  if (loading)
+    return (
+      <div className="fixed inset-0 flex justify-center items-center bg-white z-50">
+        <img src={loaderGif} alt="Loading..." className="w-30 h-30" />
+      </div>
+    );
 
   return (
     <div className="min-h-screen bg-gray-100 flex justify-center items-start p-6">
@@ -39,8 +76,7 @@ const RaiseConnection = () => {
           🔊 Raise a Connection
         </h2>
 
-        {/* Sport */}
-        <label className="block mb-2 font-medium">Select Sport</label>
+        <label className="block mb-2 font-medium">Sport</label>
         <select
           name="sport"
           value={formData.sport}
@@ -55,7 +91,6 @@ const RaiseConnection = () => {
           <option value="Basketball">Basketball</option>
         </select>
 
-        {/* Date */}
         <label className="block mb-2 font-medium">Date</label>
         <input
           type="date"
@@ -66,7 +101,6 @@ const RaiseConnection = () => {
           required
         />
 
-        {/* Time */}
         <label className="block mb-2 font-medium">Time</label>
         <input
           type="time"
@@ -77,7 +111,6 @@ const RaiseConnection = () => {
           required
         />
 
-        {/* Players Needed */}
         <label className="block mb-2 font-medium">Players Needed</label>
         <input
           type="number"
@@ -89,7 +122,6 @@ const RaiseConnection = () => {
           required
         />
 
-        {/* Turf Location */}
         <label className="block mb-2 font-medium">Turf Location</label>
         <input
           type="text"
@@ -101,14 +133,13 @@ const RaiseConnection = () => {
           required
         />
 
-        {/* Message */}
         <label className="block mb-2 font-medium">Message (optional)</label>
         <textarea
           name="message"
           value={formData.message}
           onChange={handleChange}
           className="w-full mb-4 p-2 border rounded"
-          placeholder="e.g., Looking for players for a friendly match"
+          placeholder="Looking for players for a friendly match"
         />
 
         <button
