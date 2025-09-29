@@ -6,7 +6,7 @@ const Register = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    password: "", 
+    password: "",
     confirmPassword: "",
     role: "player",
   });
@@ -42,16 +42,19 @@ const Register = () => {
     }
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/api/register", {
-        method: "POST",
-        headers: {   "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          password: formData.password,
-          role: formData.role,
-        }),
-      });
+      const res = await fetch(
+        "http://https://playconnect-backend.vercel.app//api/register",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: formData.name,
+            email: formData.email,
+            password: formData.password,
+            role: formData.role,
+          }),
+        }
+      );
       setLoading(false);
       const data = await res.json();
 

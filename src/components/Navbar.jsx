@@ -15,15 +15,18 @@ export default function Navbar() {
     const fetchUser = async () => {
       if (!token) return;
       try {
-        const res = await fetch("http://localhost:5000/api/me", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await fetch(
+          "http://https://playconnect-backend.vercel.app//api/me",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
         if (!res.ok) throw new Error("Failed to fetch user");
         const data = await res.json();
         const userData = {
           ...data,
           profilePic: data.profilePic
-            ? `http://localhost:5000${data.profilePic}`
+            ? `http://https://playconnect-backend.vercel.app/${data.profilePic}`
             : null,
         };
         setUser(userData);
@@ -42,7 +45,7 @@ export default function Navbar() {
         profilePic: e.detail.profilePic
           ? e.detail.profilePic.startsWith("http")
             ? e.detail.profilePic
-            : `http://localhost:5000${e.detail.profilePic}`
+            : `http://https://playconnect-backend.vercel.app/${e.detail.profilePic}`
           : null,
       };
       setUser(updatedUser);

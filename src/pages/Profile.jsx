@@ -64,15 +64,20 @@ const Profile = () => {
 
   const fetchProfile = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/me", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await fetch(
+        "http://https://playconnect-backend.vercel.app//api/me",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       if (!res.ok) throw new Error("Failed to fetch profile");
       const data = await res.json();
       setProfile(data);
       setForm(data);
       setPreviewPic(
-        data.profilePic ? `http://localhost:5000${data.profilePic}` : null
+        data.profilePic
+          ? `http://https://playconnect-backend.vercel.app/${data.profilePic}`
+          : null
       );
     } catch (err) {
       console.error("Error:", err);
@@ -104,11 +109,14 @@ const Profile = () => {
         formDataToSend.append(key, form[key]);
       });
 
-      const res = await fetch("http://localhost:5000/api/update", {
-        method: "PUT",
-        headers: { Authorization: `Bearer ${token}` },
-        body: formDataToSend,
-      });
+      const res = await fetch(
+        "http://https://playconnect-backend.vercel.app//api/update",
+        {
+          method: "PUT",
+          headers: { Authorization: `Bearer ${token}` },
+          body: formDataToSend,
+        }
+      );
 
       if (!res.ok) throw new Error("Update failed");
 
@@ -116,7 +124,7 @@ const Profile = () => {
 
       // ✅ Fix: Always store full URL for profilePic
       const profilePicURL = updated.user.profilePic
-        ? `http://localhost:5000${updated.user.profilePic}`
+        ? `http://https://playconnect-backend.vercel.app/${updated.user.profilePic}`
         : null;
 
       const updatedUser = { ...updated.user, profilePic: profilePicURL };

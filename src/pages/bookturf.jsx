@@ -4,7 +4,7 @@ import loaderGif from "../loader/loading.gif";
 import Sidebar from "../components/Sidebar";
 import stateCityData from "../data/stateCityData";
 
-const API_BASE = "http://localhost:5000";
+const API_BASE = "http://https://playconnect-backend.vercel.app/";
 const stripePromise = loadStripe("your_stripe_key_here");
 
 const BookTurf = () => {

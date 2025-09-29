@@ -23,9 +23,12 @@ const MyTurfs = () => {
       try {
         const token = localStorage.getItem("token");
         console.log("🔑 Token in MyTurfs.jsx:", token);
-        const res = await fetch("http://localhost:5000/api/turf/my-turfs", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await fetch(
+          "http://https://playconnect-backend.vercel.app//api/turf/my-turfs",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || "Failed to fetch turfs");
 
@@ -93,10 +96,13 @@ const MyTurfs = () => {
     if (!window.confirm("Are you sure you want to delete this turf?")) return;
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`http://localhost:5000/api/turf/${id}`, {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await fetch(
+        `http://https://playconnect-backend.vercel.app//api/turf/${id}`,
+        {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to delete turf");
       setTurfs((prev) => prev.filter((t) => t._id !== id));
@@ -158,20 +164,23 @@ const MyTurfs = () => {
       if (cleanedSlots.length === 0) return alert("❌ Add at least one slot.");
 
       const token = localStorage.getItem("token");
-      const res = await fetch(`http://localhost:5000/api/turf/${editingTurf}`, {
-        method: "PUT",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: formData.name,
-          sports: formData.sports,
-          price: formData.price,
-          location: formData.location,
-          slots: cleanedSlots,
-        }),
-      });
+      const res = await fetch(
+        `http://https://playconnect-backend.vercel.app//api/turf/${editingTurf}`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: formData.name,
+            sports: formData.sports,
+            price: formData.price,
+            location: formData.location,
+            slots: cleanedSlots,
+          }),
+        }
+      );
 
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to update turf");
@@ -222,7 +231,7 @@ const MyTurfs = () => {
                     onMouseLeave={() => stopAutoSlide(turf._id)}
                   >
                     <img
-                      src={`http://localhost:5000/uploads/${turf.photos[currentIndex]}`}
+                      src={`http://https://playconnect-backend.vercel.app//uploads/${turf.photos[currentIndex]}`}
                       alt={turf.name}
                       className="h-40 w-full object-cover transition-all duration-500"
                     />

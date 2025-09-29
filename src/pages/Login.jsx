@@ -27,14 +27,17 @@ const Login = () => {
     }
 
     try {
-      const res = await fetch("http://localhost:5000/api/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: formData.email,
-          password: formData.password,
-        }),
-      });
+      const res = await fetch(
+        "http://https://playconnect-backend.vercel.app//api/login",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: formData.email,
+            password: formData.password,
+          }),
+        }
+      );
 
       const data = await res.json();
 
@@ -50,7 +53,7 @@ const Login = () => {
         profilePic: data.user.profilePic
           ? data.user.profilePic.startsWith("http")
             ? data.user.profilePic
-            : `http://localhost:5000${data.user.profilePic}`
+            : `http://https://playconnect-backend.vercel.app/${data.user.profilePic}`
           : null,
       };
 

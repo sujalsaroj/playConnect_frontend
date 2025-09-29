@@ -74,11 +74,14 @@ const AddTurf = () => {
         formDataToSend.append("photos", photo);
       });
 
-      const res = await fetch("http://localhost:5000/api/turf/add", {
-        method: "POST",
-        headers: { Authorization: `Bearer ${token}` },
-        body: formDataToSend,
-      });
+      const res = await fetch(
+        "http://https://playconnect-backend.vercel.app//api/turf/add",
+        {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}` },
+          body: formDataToSend,
+        }
+      );
 
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to add turf");

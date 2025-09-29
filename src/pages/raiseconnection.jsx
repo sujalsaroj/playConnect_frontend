@@ -25,20 +25,23 @@ const RaiseConnection = () => {
         return alert("⚠️ Please login first!");
       }
 
-      const res = await fetch("http://localhost:5000/api/connections", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          turf: formData.turfLocation,
-          date: `${formData.date}T${formData.time}`,
-          maxPlayers: formData.playersNeeded,
-          sport: formData.sport,
-          message: formData.message,
-        }),
-      });
+      const res = await fetch(
+        "http://https://playconnect-backend.vercel.app//api/connections",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            turf: formData.turfLocation,
+            date: `${formData.date}T${formData.time}`,
+            maxPlayers: formData.playersNeeded,
+            sport: formData.sport,
+            message: formData.message,
+          }),
+        }
+      );
       setLoading(false);
       if (!res.ok) throw new Error("Failed to raise connection");
       const data = await res.json();
