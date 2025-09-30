@@ -18,7 +18,7 @@ const Contact = () => {
 
     try {
       const res = await fetch(
-        "http://https://playconnect-backend.vercel.app//api/contact",
+        "https://playconnect-backend.vercel.app/api/contact",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

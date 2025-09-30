@@ -64,12 +64,9 @@ const Profile = () => {
 
   const fetchProfile = async () => {
     try {
-      const res = await fetch(
-        "http://https://playconnect-backend.vercel.app//api/me",
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      const res = await fetch("https://playconnect-backend.vercel.app/api/me", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       if (!res.ok) throw new Error("Failed to fetch profile");
       const data = await res.json();
       setProfile(data);
@@ -110,7 +107,7 @@ const Profile = () => {
       });
 
       const res = await fetch(
-        "http://https://playconnect-backend.vercel.app//api/update",
+        "https://playconnect-backend.vercel.app/api/update",
         {
           method: "PUT",
           headers: { Authorization: `Bearer ${token}` },

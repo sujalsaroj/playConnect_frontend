@@ -16,7 +16,7 @@ export default function Navbar() {
       if (!token) return;
       try {
         const res = await fetch(
-          "http://https://playconnect-backend.vercel.app//api/me",
+          "https://playconnect-backend.vercel.app/api/me",
           {
             headers: { Authorization: `Bearer ${token}` },
           }

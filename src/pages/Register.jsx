@@ -43,7 +43,7 @@ const Register = () => {
     setLoading(true);
     try {
       const res = await fetch(
-        "http://https://playconnect-backend.vercel.app//api/register",
+        "https://playconnect-backend.vercel.app/api/register",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

@@ -11,7 +11,7 @@ const DashboardTurfOwner = () => {
   const fetchBookings = async () => {
     try {
       const res = await fetch(
-        "http://https://playconnect-backend.vercel.app//api/bookings/owner-bookings",
+        "https://playconnect-backend.vercel.app/api/bookings/owner-bookings",
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         }
@@ -35,7 +35,7 @@ const DashboardTurfOwner = () => {
   const confirmBooking = async (id) => {
     try {
       const res = await fetch(
-        `http://https://playconnect-backend.vercel.app//api/bookings/confirm/${id}`,
+        `https://playconnect-backend.vercel.app/api/bookings/confirm/${id}`,
         {
           method: "POST",
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },

@@ -10,7 +10,7 @@ const ViewConnections = () => {
     setLoading(true);
     try {
       const res = await fetch(
-        "http://https://playconnect-backend.vercel.app//api/connections/my",
+        "https://playconnect-backend.vercel.app/api/connections/my",
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         }

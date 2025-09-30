@@ -75,7 +75,7 @@ const AddTurf = () => {
       });
 
       const res = await fetch(
-        "http://https://playconnect-backend.vercel.app//api/turf/add",
+        "https://playconnect-backend.vercel.app/api/turf/add",
         {
           method: "POST",
           headers: { Authorization: `Bearer ${token}` },

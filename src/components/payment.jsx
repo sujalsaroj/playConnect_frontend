@@ -2,7 +2,7 @@
 export const startPayment = async (bookingData, token) => {
   try {
     const res = await fetch(
-      "http://https://playconnect-backend.vercel.app//api/payment/create-checkout-session",
+      "https://playconnect-backend.vercel.app/api/payment/create-checkout-session",
       {
         method: "POST",
         headers: {

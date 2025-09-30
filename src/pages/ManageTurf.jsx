@@ -24,7 +24,7 @@ const MyTurfs = () => {
         const token = localStorage.getItem("token");
         console.log("🔑 Token in MyTurfs.jsx:", token);
         const res = await fetch(
-          "http://https://playconnect-backend.vercel.app//api/turf/my-turfs",
+          "https://playconnect-backend.vercel.app/api/turf/my-turfs",
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -97,7 +97,7 @@ const MyTurfs = () => {
     try {
       const token = localStorage.getItem("token");
       const res = await fetch(
-        `http://https://playconnect-backend.vercel.app//api/turf/${id}`,
+        `https://playconnect-backend.vercel.app/api/turf/${id}`,
         {
           method: "DELETE",
           headers: { Authorization: `Bearer ${token}` },
@@ -165,7 +165,7 @@ const MyTurfs = () => {
 
       const token = localStorage.getItem("token");
       const res = await fetch(
-        `http://https://playconnect-backend.vercel.app//api/turf/${editingTurf}`,
+        `https://playconnect-backend.vercel.app/api/turf/${editingTurf}`,
         {
           method: "PUT",
           headers: {
@@ -231,7 +231,7 @@ const MyTurfs = () => {
                     onMouseLeave={() => stopAutoSlide(turf._id)}
                   >
                     <img
-                      src={`http://https://playconnect-backend.vercel.app//uploads/${turf.photos[currentIndex]}`}
+                      src={`https://playconnect-backend.vercel.app/uploads/${turf.photos[currentIndex]}`}
                       alt={turf.name}
                       className="h-40 w-full object-cover transition-all duration-500"
                     />

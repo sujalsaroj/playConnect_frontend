@@ -9,7 +9,7 @@ const ViewBookings = () => {
   const fetchBookings = async () => {
     try {
       const res = await fetch(
-        "http://https://playconnect-backend.vercel.app//api/bookings/my-bookings",
+        "https://playconnect-backend.vercel.app/api/bookings/my-bookings",
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         }
@@ -32,7 +32,7 @@ const ViewBookings = () => {
   const cancelBooking = async (id) => {
     try {
       const res = await fetch(
-        `http://https://playconnect-backend.vercel.app//api/bookings/cancel/${id}`,
+        `https://playconnect-backend.vercel.app/api/bookings/cancel/${id}`,
         {
           method: "DELETE", // your backend uses DELETE for cancel
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -76,7 +76,7 @@ const ViewBookings = () => {
               {/* Turf Image */}
               {booking.turfId?.photos?.[0] ? (
                 <img
-                  src={`http://https://playconnect-backend.vercel.app//uploads/${booking.turfId.photos[0]}`}
+                  src={`https://playconnect-backend.vercel.app/uploads/${booking.turfId.photos[0]}`}
                   alt={booking.turfId?.name || "Turf Image"}
                   className="w-full h-72 object-contain bg-gray-100"
                 />

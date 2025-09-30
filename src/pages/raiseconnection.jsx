@@ -26,7 +26,7 @@ const RaiseConnection = () => {
       }
 
       const res = await fetch(
-        "http://https://playconnect-backend.vercel.app//api/connections",
+        "https://playconnect-backend.vercel.app/api/connections",
         {
           method: "POST",
           headers: {
