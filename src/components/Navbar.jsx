@@ -14,7 +14,7 @@ export default function Navbar() {
     const fetchUser = async () => {
       if (!token) return;
       try {
-        const res = await fetch("http://localhost:5000/api/me", {
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/me`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (!res.ok) throw new Error("Failed to fetch user");
@@ -22,7 +22,7 @@ export default function Navbar() {
         const userData = {
           ...data,
           profilePic: data.profilePic
-            ? `http://localhost:5000${data.profilePic}`
+            ? `${import.meta.env.VITE_API_URL}${data.profilePic}`
             : null,
         };
         setUser(userData);
@@ -40,7 +40,7 @@ export default function Navbar() {
         profilePic: e.detail.profilePic
           ? e.detail.profilePic.startsWith("http")
             ? e.detail.profilePic
-            : `http://localhost:5000${e.detail.profilePic}`
+            : `${import.meta.env.VITE_API_URL}${e.detail.profilePic}`
           : null,
       };
       setUser(updatedUser);

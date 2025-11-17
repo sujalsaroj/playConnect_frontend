@@ -9,9 +9,12 @@ const ViewConnections = () => {
   const fetchConnections = async () => {
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/api/connections/my", {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/connections/my`,
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }
+      );
 
       if (!res.ok) throw new Error("Failed to fetch connections");
       const data = await res.json();

@@ -37,7 +37,7 @@ const Login = () => {
     }
 
     try {
-      const res = await fetch("http://localhost:5000/api/login", {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -60,7 +60,7 @@ const Login = () => {
         profilePic: data.user.profilePic
           ? data.user.profilePic.startsWith("http")
             ? data.user.profilePic
-            : `http://localhost:5000/${data.user.profilePic}`
+            : `${import.meta.env.VITE_API_URL}${data.user.profilePic}`
           : null,
       };
 

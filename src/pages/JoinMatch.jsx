@@ -16,9 +16,12 @@ const JoinConnection = () => {
   const fetchConnections = async () => {
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/api/connections/open", {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/connections/open`,
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }
+      );
       if (!res.ok) throw new Error("Failed to fetch connections");
       const data = await res.json();
       setConnections(data);
@@ -36,12 +39,15 @@ const JoinConnection = () => {
 
     setLoading(true);
     try {
-      const res = await fetch(`http://localhost:5000/api/connections/${id}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/connections/${id}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
       const data = await res.json();
       if (!res.ok)
         throw new Error(data.message || "Failed to delete connection");
@@ -59,7 +65,7 @@ const JoinConnection = () => {
     setLoading(true);
     try {
       const res = await fetch(
-        `http://localhost:5000/api/connections/${id}/join`,
+        `${import.meta.env.VITE_API_URL}/api/connections/${id}/join`,
         {
           method: "POST",
           headers: {

@@ -29,7 +29,7 @@ const ResetPassword = () => {
 
     try {
       const res = await fetch(
-        `http://localhost:5000/api/reset-password/${token}`,
+        `${import.meta.env.VITE_API_URL}/api/reset-password/${token}`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

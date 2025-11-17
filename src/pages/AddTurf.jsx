@@ -74,14 +74,12 @@ const AddTurf = () => {
         formDataToSend.append("photos", photo);
       });
 
-      const res = await fetch(
-        "http://localhost:5000/api/turf/add",
-        {
-          method: "POST",
-          headers: { Authorization: `Bearer ${token}` },
-          body: formDataToSend,
-        }
-      );
+      // ✅ Use environment variable for backend URL
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/turf/add`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: formDataToSend,
+      });
 
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to add turf");
@@ -113,9 +111,7 @@ const AddTurf = () => {
 
   return (
     <div className="p-8 mt-10 mb-10 max-w-3xl mx-auto bg-white rounded-xl shadow-md">
-      <h2 className="text-3xl font-bold mb-8 text-green-700">
-       Add New Turf
-      </h2>
+      <h2 className="text-3xl font-bold mb-8 text-green-700">Add New Turf</h2>
       <form onSubmit={handleSubmit} className="grid gap-6">
         {/* Photos Upload */}
         <div>
@@ -313,4 +309,5 @@ const AddTurf = () => {
     </div>
   );
 };
+
 export default AddTurf;

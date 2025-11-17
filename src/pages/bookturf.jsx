@@ -4,7 +4,8 @@ import loaderGif from "../loader/loading.gif";
 import Sidebar from "../components/Sidebar";
 import stateCityData from "../data/stateCityData";
 
-const API_BASE = "http://localhost:5000";
+// ✅ Use environment variable for API
+const API_BASE = import.meta.env.VITE_API_URL;
 
 const BookTurf = () => {
   const [turfs, setTurfs] = useState([]);

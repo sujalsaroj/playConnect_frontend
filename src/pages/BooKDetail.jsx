@@ -3,10 +3,9 @@ import { useParams } from "react-router-dom";
 import { loadStripe } from "@stripe/stripe-js";
 import loaderGif from "../loader/loading.gif";
 
-const API_BASE = "http://localhost:5000";
-const stripePromise = loadStripe(
-  "pk_test_51RzfiuR5qDxxUwFvraNwBrA3A3gbotLvHvRo5MMjfSWkZBTII1zRGlRUsY3Npl6VcZe4P7DSPd1xEoLzEibVYi8r00S1Ej3cfb"
-);
+// ✅ Use environment variables
+const API_BASE = import.meta.env.VITE_API_URL;
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_KEY);
 
 const BookDetail = () => {
   const { id } = useParams();

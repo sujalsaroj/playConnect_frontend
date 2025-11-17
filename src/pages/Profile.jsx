@@ -60,7 +60,7 @@ const Profile = () => {
 
   const fetchProfile = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/me", {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/me`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (!res.ok) throw new Error("Failed to fetch profile");
@@ -69,7 +69,7 @@ const Profile = () => {
       setForm(data);
       setPreviewPic(
         data.profilePic
-          ? `http://localhost:5000${data.profilePic}`
+          ? `${import.meta.env.VITE_API_URL}${data.profilePic}`
           : null
       );
     } catch (err) {
@@ -102,14 +102,11 @@ const Profile = () => {
         formDataToSend.append(key, form[key]);
       });
 
-      const res = await fetch(
-        "http://localhost:5000/api/update",
-        {
-          method: "PUT",
-          headers: { Authorization: `Bearer ${token}` },
-          body: formDataToSend,
-        }
-      );
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/update`, {
+        method: "PUT",
+        headers: { Authorization: `Bearer ${token}` },
+        body: formDataToSend,
+      });
 
       if (!res.ok) throw new Error("Update failed");
 
@@ -117,7 +114,7 @@ const Profile = () => {
 
       //  Fix: Always store full URL for profilePic
       const profilePicURL = updated.user.profilePic
-        ? `http://localhost:5000${updated.user.profilePic}`
+        ? `${import.meta.env.VITE_API_URL}${updated.user.profilePic}`
         : null;
 
       const updatedUser = { ...updated.user, profilePic: profilePicURL };

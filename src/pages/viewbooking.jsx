@@ -9,7 +9,7 @@ const ViewBookings = () => {
   const fetchBookings = async () => {
     try {
       const res = await fetch(
-        "http://localhost:5000/api/bookings/my-bookings",
+        `${import.meta.env.VITE_API_URL}/api/bookings/my-bookings`,
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         }
@@ -32,7 +32,7 @@ const ViewBookings = () => {
   const cancelBooking = async (id) => {
     try {
       const res = await fetch(
-        `http://localhost:5000/api/bookings/cancel/${id}`,
+        `${import.meta.env.VITE_API_URL}/api/bookings/cancel/${id}`,
         {
           method: "DELETE", // your backend uses DELETE for cancel
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -76,7 +76,9 @@ const ViewBookings = () => {
               {/* Turf Image */}
               {booking.turfId?.photos?.[0] ? (
                 <img
-                  src={`http://localhost:5000/uploads/${booking.turfId.photos[0]}`}
+                  src={`${import.meta.env.VITE_API_URL}/uploads/${
+                    booking.turfId.photos[0]
+                  }`}
                   alt={booking.turfId?.name || "Turf Image"}
                   className="w-full h-72 object-contain bg-gray-100"
                 />

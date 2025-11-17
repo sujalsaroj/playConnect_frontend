@@ -2,7 +2,7 @@
 export const startPayment = async (bookingData, token) => {
   try {
     const res = await fetch(
-      "http://localhost:5000api/payment/create-checkout-session",
+      `${import.meta.env.VITE_API_URL}/api/payment/create-checkout-session`,
       {
         method: "POST",
         headers: {
@@ -17,10 +17,10 @@ export const startPayment = async (bookingData, token) => {
     if (data.url) {
       window.location.href = data.url; // redirect to Stripe checkout
     } else {
-      alert(" Payment session failed");
+      alert("Payment session failed");
     }
   } catch (e) {
     console.error("Payment error:", e);
-    alert(" Payment failed. Try again later.");
+    alert("Payment failed. Try again later.");
   }
 };
