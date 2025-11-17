@@ -2,7 +2,6 @@
 import { useEffect } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
-
 import Hero from "../components/Herosection";
 import Features from "../components/Feacture";
 import Guide from "../components/step_to_guide";

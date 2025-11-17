@@ -9,7 +9,6 @@ import AppRoutes from "./routes/Approutes";
 
 function App() {
   // Remove this line: const location = useLocation();
-
   return (
     <>
       <Navbar />
@@ -18,5 +17,4 @@ function App() {
     </>
   );
 }
-
 export default App;

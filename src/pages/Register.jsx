@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import loaderGif from "../loader/loading.gif";
+
 const Register = () => {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -11,18 +11,18 @@ const Register = () => {
     role: "player",
   });
   const [error, setError] = useState("");
-  const navigate = useNavigate();
+  const [success, setSuccess] = useState(""); //success message
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-    console.log(formData);
   };
 
   const handleRegister = async (e) => {
     e.preventDefault();
     setError("");
+    setSuccess("");
 
-    // Basic validation
+    //  validation
     if (
       !formData.name ||
       !formData.email ||
@@ -40,21 +40,20 @@ const Register = () => {
       setError("Password should be at least 6 characters");
       return;
     }
+
     setLoading(true);
     try {
-      const res = await fetch(
-        "https://playconnect-backend.vercel.app/api/register",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            name: formData.name,
-            email: formData.email,
-            password: formData.password,
-            role: formData.role,
-          }),
-        }
-      );
+      const res = await fetch("http://localhost:5000/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          password: formData.password,
+          role: formData.role,
+        }),
+      });
+
       setLoading(false);
       const data = await res.json();
 
@@ -63,8 +62,19 @@ const Register = () => {
         return;
       }
 
-      alert("Registration successful! Please login.");
-      navigate("/login");
+      //  Show success message
+      setSuccess(
+        "Registration successful! Please check your email to verify your account."
+      );
+
+      // clear the form
+      setFormData({
+        name: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+        role: "player",
+      });
     } catch (err) {
       setError("Server not responding. Please try later.");
       setLoading(false);
@@ -86,8 +96,16 @@ const Register = () => {
       >
         <h2 className="text-2xl font-bold mb-6 text-center">Register</h2>
 
+        {/*  Success Message */}
+        {success && (
+          <div className="mb-4 p-2 bg-green-100 text-green-700 rounded text-center font-medium">
+            {success}
+          </div>
+        )}
+
+        {/*  Error Message */}
         {error && (
-          <div className="mb-4 p-2 bg-red-100 text-red-700 rounded">
+          <div className="mb-4 p-2 bg-red-100 text-red-700 rounded text-center font-medium">
             {error}
           </div>
         )}

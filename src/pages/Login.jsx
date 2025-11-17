@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import loaderGif from "../loader/loading.gif";
+import { useLocation } from "react-router-dom";
+import { useEffect } from "react";
 
 const Login = () => {
   const [loading, setLoading] = useState(false);
@@ -15,6 +17,14 @@ const Login = () => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
+  const location = useLocation();
+
+  useEffect(() => {
+    const query = new URLSearchParams(location.search);
+    if (query.get("verified") === "true") {
+    }
+  }, [location]);
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
@@ -27,17 +37,14 @@ const Login = () => {
     }
 
     try {
-      const res = await fetch(
-        "https://playconnect-backend.vercel.app/api/login",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            email: formData.email,
-            password: formData.password,
-          }),
-        }
-      );
+      const res = await fetch("http://localhost:5000/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+        }),
+      });
 
       const data = await res.json();
 
@@ -47,21 +54,21 @@ const Login = () => {
         return;
       }
 
-      // ✅ Always ensure full URL for profilePic
+      //  Ensure full URL for profilePic
       const userData = {
         ...data.user,
         profilePic: data.user.profilePic
           ? data.user.profilePic.startsWith("http")
             ? data.user.profilePic
-            : `http://https://playconnect-backend.vercel.app/${data.user.profilePic}`
+            : `http://localhost:5000/${data.user.profilePic}`
           : null,
       };
 
-      // Save token and updated user info
+      // Save token and user info
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(userData));
 
-      // ✅ Dispatch custom event to update Navbar immediately
+      //  Dispatch custom event to update Navbar immediately
       window.dispatchEvent(
         new CustomEvent("userUpdated", { detail: userData })
       );
@@ -128,6 +135,15 @@ const Login = () => {
             required
             autoComplete="current-password"
           />
+          {/*  Added Forgot Password link */}
+          <div className="text-right mt-1">
+            <a
+              href="/forgot-password"
+              className="text-sm text-blue-600 hover:underline"
+            >
+              Forgot Password?
+            </a>
+          </div>
         </div>
 
         <button

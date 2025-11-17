@@ -64,7 +64,7 @@ function Footer() {
             <h3 className="text-xl font-bold mb-3">Follow Us</h3>
             <div className="flex space-x-4 text-2xl">
               <a
-                href="https://facebook.com"
+                href="http://facebook.com"
                 target="_blank"
                 rel="noreferrer"
                 className="hover:text-gray-300"
@@ -72,7 +72,7 @@ function Footer() {
                 <FaFacebook />
               </a>
               <a
-                href="https://instagram.com"
+                href="http://instagram.com"
                 target="_blank"
                 rel="noreferrer"
                 className="hover:text-gray-300"
@@ -80,7 +80,7 @@ function Footer() {
                 <FaInstagram />
               </a>
               <a
-                href="https://twitter.com"
+                href="http://twitter.com"
                 target="_blank"
                 rel="noreferrer"
                 className="hover:text-gray-300"
@@ -88,7 +88,7 @@ function Footer() {
                 <FaTwitterSquare />
               </a>
               <a
-                href="https://youtube.com"
+                href="http://youtube.com"
                 target="_blank"
                 rel="noreferrer"
                 className="hover:text-gray-300"

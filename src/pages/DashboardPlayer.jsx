@@ -5,7 +5,7 @@ import loaderGif from "../loader/loading.gif"; // check spelling of file
 const DashboardPlayer = () => {
   const [playerName, setplayerName] = useState("");
 
-  const [loading, setLoading] = useState(true); // ✅ hook inside component
+  const [loading, setLoading] = useState(true); //  hook inside component
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
@@ -29,7 +29,7 @@ const DashboardPlayer = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-gray-100 p-6">
       <div className="max-w-5xl mx-auto">
         <h1 className="text-3xl font-bold mb-6">Welcome, {playerName} 👋</h1>
 
@@ -90,7 +90,7 @@ const DashboardPlayer = () => {
           <div className="bg-white shadow-md rounded-xl p-6 hover:shadow-lg transition">
             <h2 className="text-xl font-semibold mb-2">📖 My Connections</h2>
             <p className="text-gray-600">
-              View the connections you created or joined.
+              View the connections that you joined.
             </p>
             <Link to="/my-connections">
               <button className="mt-4 bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700">

@@ -9,7 +9,7 @@ const ViewBookings = () => {
   const fetchBookings = async () => {
     try {
       const res = await fetch(
-        "https://playconnect-backend.vercel.app/api/bookings/my-bookings",
+        "http://localhost:5000/api/bookings/my-bookings",
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         }
@@ -25,14 +25,14 @@ const ViewBookings = () => {
 
   useEffect(() => {
     fetchBookings();
-    // ✅ No auto-refresh here, user will see updated status immediately after cancel
+    //  No auto-refresh here, user will see updated status immediately after cancel
   }, []);
 
   // Cancel a booking
   const cancelBooking = async (id) => {
     try {
       const res = await fetch(
-        `https://playconnect-backend.vercel.app/api/bookings/cancel/${id}`,
+        `http://localhost:5000/api/bookings/cancel/${id}`,
         {
           method: "DELETE", // your backend uses DELETE for cancel
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -46,7 +46,7 @@ const ViewBookings = () => {
           prev.map((b) => (b._id === id ? { ...b, status: "Cancelled" } : b))
         );
       } else {
-        console.error("Cancel failed:", data.message);
+        console.error("Cancel failed:");
       }
     } catch (err) {
       console.error("Cancel error:", err);
@@ -76,7 +76,7 @@ const ViewBookings = () => {
               {/* Turf Image */}
               {booking.turfId?.photos?.[0] ? (
                 <img
-                  src={`https://playconnect-backend.vercel.app/uploads/${booking.turfId.photos[0]}`}
+                  src={`http://localhost:5000/uploads/${booking.turfId.photos[0]}`}
                   alt={booking.turfId?.name || "Turf Image"}
                   className="w-full h-72 object-contain bg-gray-100"
                 />
@@ -93,8 +93,8 @@ const ViewBookings = () => {
                 <p className="text-gray-600">
                   📍 {booking.turfId?.location || "Location not available"}
                 </p>
-                <p className="text-gray-600">📅 Date: {booking.date}</p>
-                <p className="text-gray-600">⏰ Time: {booking.slot}</p>
+                <p className="text-gray-600">Date: {booking.date}</p>
+                <p className="text-gray-600">Time: {booking.slot}</p>
                 <p
                   className={`font-medium ${
                     booking.status === "Cancelled"
@@ -104,7 +104,7 @@ const ViewBookings = () => {
                       : "text-green-600"
                   }`}
                 >
-                  💰 Status: {booking.status}
+                  Status: {booking.status}
                 </p>
 
                 {booking.status !== "Cancelled" && (
@@ -123,5 +123,4 @@ const ViewBookings = () => {
     </div>
   );
 };
-
 export default ViewBookings;

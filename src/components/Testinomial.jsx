@@ -1,3 +1,7 @@
+import avatar4 from "../images/avtar4.jpg";
+import avatar1 from "../images/avtar1.png";
+import avatar from "../images/avatar.jpg";
+
 function Testinomial() {
   return (
     <>
@@ -11,7 +15,7 @@ function Testinomial() {
           <div className="bg-white p-6 rounded-xl shadow-md">
             <div className="flex items-center gap-4 mb-4">
               <img
-                src="https://i.pravatar.cc/100?img=1"
+                src={avatar1}
                 alt="User"
                 className="w-14 h-14 rounded-full border"
               />
@@ -31,7 +35,7 @@ function Testinomial() {
           <div className="bg-white p-6 rounded-xl shadow-md">
             <div className="flex items-center gap-4 mb-4">
               <img
-                src="https://i.pravatar.cc/100?img=2"
+                src={avatar4}
                 alt="User"
                 className="w-14 h-14 rounded-full border"
               />
@@ -51,7 +55,7 @@ function Testinomial() {
           <div className="bg-white p-6 rounded-xl shadow-md">
             <div className="flex items-center gap-4 mb-4">
               <img
-                src="https://i.pravatar.cc/100?img=3"
+                src={avatar}
                 alt="User"
                 className="w-14 h-14 rounded-full border"
               />

@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-const API_BASE = "http://https://playconnect-backend.vercel.app/";
+const API_BASE = "http://localhost:5000";
 
 const Success = () => {
   const location = useLocation();
@@ -23,11 +23,11 @@ const Success = () => {
           body: JSON.stringify({ bookingId }),
         });
 
-        alert("✅ Payment successful, booking confirmed!");
+        alert(" Payment successful, booking confirmed!");
         navigate("/bookTurf");
       } catch (err) {
-        console.error("Confirm booking error:", err);
-        alert("❌ Could not confirm booking.");
+        console.error(err);
+        alert(" Could not confirm booking.");
       }
     };
 

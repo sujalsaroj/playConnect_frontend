@@ -2,7 +2,6 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 export default function Navbar() {
-  // ✅ Initial state from localStorage for refresh persistence
   const [user, setUser] = useState(() => {
     const storedUser = localStorage.getItem("user");
     return storedUser ? JSON.parse(storedUser) : null;
@@ -15,18 +14,15 @@ export default function Navbar() {
     const fetchUser = async () => {
       if (!token) return;
       try {
-        const res = await fetch(
-          "https://playconnect-backend.vercel.app/api/me",
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
+        const res = await fetch("http://localhost:5000/api/me", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         if (!res.ok) throw new Error("Failed to fetch user");
         const data = await res.json();
         const userData = {
           ...data,
           profilePic: data.profilePic
-            ? `http://https://playconnect-backend.vercel.app/${data.profilePic}`
+            ? `http://localhost:5000${data.profilePic}`
             : null,
         };
         setUser(userData);
@@ -38,14 +34,13 @@ export default function Navbar() {
 
     fetchUser();
 
-    // ✅ Listen for profile updates (Profile.jsx / Login.jsx)
     const handleUserUpdate = (e) => {
       const updatedUser = {
         ...e.detail,
         profilePic: e.detail.profilePic
           ? e.detail.profilePic.startsWith("http")
             ? e.detail.profilePic
-            : `http://https://playconnect-backend.vercel.app/${e.detail.profilePic}`
+            : `http://localhost:5000${e.detail.profilePic}`
           : null,
       };
       setUser(updatedUser);
@@ -97,7 +92,7 @@ export default function Navbar() {
         {/* Nav Links & Auth/User */}
         <div className="flex items-center space-x-4">
           <div className="hidden md:flex space-x-6 text-xl">
-            <NavLinks closeMenu={() => {}} />
+            <NavLinks user={user} closeMenu={() => {}} />
           </div>
           {user ? (
             <UserDropdown user={user} onLogout={handleLogout} />
@@ -110,7 +105,11 @@ export default function Navbar() {
       {/* Mobile Menu */}
       {mobileMenuOpen && (
         <div className="md:hidden px-4 pb-4 space-y-2">
-          <NavLinks mobile closeMenu={() => setMobileMenuOpen(false)} />
+          <NavLinks
+            user={user}
+            mobile
+            closeMenu={() => setMobileMenuOpen(false)}
+          />
           {user ? (
             <UserDropdown
               user={user}
@@ -129,25 +128,52 @@ export default function Navbar() {
   );
 }
 
-function NavLinks({ mobile = false, closeMenu }) {
+// ✅ Updated Role-based NavLinks
+function NavLinks({ user, mobile = false, closeMenu }) {
   const className = `block py-2 px-3 hover:bg-green-800 rounded ${
     mobile ? "text-lg" : ""
   }`;
+
   const handleClick = () => {
     if (closeMenu) closeMenu();
   };
 
+  const role = user?.role; // player / owner / undefined
+
   return (
     <>
-      <Link to="/home" className={className} onClick={handleClick}>
-        Home
-      </Link>
-      <Link to="/dashboard-player" className={className} onClick={handleClick}>
-        Book Turf
-      </Link>
+      {/* Home - Common */}
+
+      {/* Book Turf - Visible to everyone except owner */}
+      {role !== "owner" && (
+        <>
+          <Link to="/home" className={className} onClick={handleClick}>
+            Home
+          </Link>
+          <Link
+            to="/dashboard-player"
+            className={className}
+            onClick={handleClick}
+          >
+            Book Turf
+          </Link>
+        </>
+      )}
+      {role == "owner" && (
+        <Link
+          to="/dashboard-turf-owner"
+          className={className}
+          onClick={handleClick}
+        >
+          Home
+        </Link>
+      )}
+      {/* About - Common */}
       <Link to="/about" className={className} onClick={handleClick}>
         About
       </Link>
+
+      {/* Contact - Common */}
       <Link to="/contact-us" className={className} onClick={handleClick}>
         Contact
       </Link>
@@ -155,6 +181,7 @@ function NavLinks({ mobile = false, closeMenu }) {
   );
 }
 
+// ✅ Auth Links (Login/Register)
 function AuthLinks() {
   return (
     <div className="flex items-center space-x-3">
@@ -174,6 +201,7 @@ function AuthLinks() {
   );
 }
 
+// ✅ User Dropdown
 function UserDropdown({ user, onLogout, mobile = false }) {
   const [open, setOpen] = useState(false);
 

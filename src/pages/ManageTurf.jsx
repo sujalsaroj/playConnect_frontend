@@ -17,18 +17,15 @@ const MyTurfs = () => {
   });
   const intervalsRef = useRef({});
 
-  // ---------------- FETCH & NORMALIZE ----------------
+  //  FETCH & NORMALIZE
   useEffect(() => {
     const fetchTurfs = async () => {
       try {
         const token = localStorage.getItem("token");
-        console.log("🔑 Token in MyTurfs.jsx:", token);
-        const res = await fetch(
-          "https://playconnect-backend.vercel.app/api/turf/my-turfs",
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
+
+        const res = await fetch("http://localhost:5000/api/turf/my-turfs", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || "Failed to fetch turfs");
 
@@ -57,7 +54,7 @@ const MyTurfs = () => {
     fetchTurfs();
   }, []);
 
-  // ---------------- IMAGE SLIDER ----------------
+  //  IMAGE SLIDER
   const nextImage = (turfId, total) =>
     setImageIndex((prev) => ({
       ...prev,
@@ -91,28 +88,25 @@ const MyTurfs = () => {
     return () => Object.values(intervalsRef.current).forEach(clearInterval);
   }, []);
 
-  // ---------------- DELETE TURF ----------------
+  //  DELETE TURF
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this turf?")) return;
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(
-        `https://playconnect-backend.vercel.app/api/turf/${id}`,
-        {
-          method: "DELETE",
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      const res = await fetch(`http://localhost:5000/api/turf/${id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to delete turf");
       setTurfs((prev) => prev.filter((t) => t._id !== id));
-      alert("✅ Turf deleted successfully");
+      alert("Turf deleted successfully");
     } catch (err) {
       alert(err.message);
     }
   };
 
-  // ---------------- EDIT TURF ----------------
+  //  EDIT TURF
   const handleEditClick = (turf) => {
     setEditingTurf(turf._id);
     const sportsStr = Array.isArray(turf.sports)
@@ -132,12 +126,12 @@ const MyTurfs = () => {
     });
   };
 
-  // ---------------- SLOT HANDLING ----------------
+  // SLOT HANDLING
   const handleAddSlot = () => {
     const slot = formData.newSlot.trim();
     const slotPattern = /^\d{1,2}\s?(AM|PM)\s?-\s?\d{1,2}\s?(AM|PM)$/i;
     if (!slotPattern.test(slot)) {
-      alert("❌ Invalid slot format. Use like: 9AM - 10AM");
+      alert(" Invalid slot format. Use like: 9AM - 10AM");
       return;
     }
     setFormData((prev) => ({
@@ -161,26 +155,23 @@ const MyTurfs = () => {
         time: String(s.time).trim(),
         booked: !!s.booked,
       }));
-      if (cleanedSlots.length === 0) return alert("❌ Add at least one slot.");
+      if (cleanedSlots.length === 0) return alert(" Add at least one slot.");
 
       const token = localStorage.getItem("token");
-      const res = await fetch(
-        `https://playconnect-backend.vercel.app/api/turf/${editingTurf}`,
-        {
-          method: "PUT",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            name: formData.name,
-            sports: formData.sports,
-            price: formData.price,
-            location: formData.location,
-            slots: cleanedSlots,
-          }),
-        }
-      );
+      const res = await fetch(`http://localhost:5000/api/turf/${editingTurf}`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          sports: formData.sports,
+          price: formData.price,
+          location: formData.location,
+          slots: cleanedSlots,
+        }),
+      });
 
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to update turf");
@@ -189,7 +180,6 @@ const MyTurfs = () => {
         prev.map((t) => (t._id === editingTurf ? data.turf : t))
       );
       setEditingTurf(null);
-      alert("✅ Turf updated successfully");
     } catch (err) {
       alert(err.message);
     }
@@ -204,7 +194,7 @@ const MyTurfs = () => {
 
   return (
     <div className="p-6 max-w-5xl mx-auto">
-      <h2 className="text-3xl font-bold mb-6 text-green-700">🏟 My Turfs</h2>
+      <h2 className="text-3xl font-bold mb-6 text-green-700">My Turfs</h2>
 
       {turfs.length === 0 ? (
         <p className="text-gray-500">No turfs found. Add one to get started!</p>
@@ -231,7 +221,7 @@ const MyTurfs = () => {
                     onMouseLeave={() => stopAutoSlide(turf._id)}
                   >
                     <img
-                      src={`https://playconnect-backend.vercel.app/uploads/${turf.photos[currentIndex]}`}
+                      src={`http://localhost:5000/uploads/${turf.photos[currentIndex]}`}
                       alt={turf.name}
                       className="h-40 w-full object-cover transition-all duration-500"
                     />

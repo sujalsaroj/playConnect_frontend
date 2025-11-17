@@ -18,7 +18,6 @@ function getRandomColor(seed = null) {
   }
   return colors[Math.floor(Math.random() * colors.length)];
 }
-
 function Avatar({ name, photoURL, size = 112 }) {
   if (photoURL) {
     return (
@@ -31,7 +30,6 @@ function Avatar({ name, photoURL, size = 112 }) {
       />
     );
   }
-
   // Show initials
   let initials = "?";
   if (name) {
@@ -41,9 +39,7 @@ function Avatar({ name, photoURL, size = 112 }) {
         ? parts[0].charAt(0).toUpperCase()
         : (parts[0].charAt(0) + parts[1].charAt(0)).toUpperCase();
   }
-
   const bgColor = getRandomColor(initials);
-
   return (
     <div
       style={{ backgroundColor: bgColor, width: size, height: size }}
@@ -64,7 +60,7 @@ const Profile = () => {
 
   const fetchProfile = async () => {
     try {
-      const res = await fetch("https://playconnect-backend.vercel.app/api/me", {
+      const res = await fetch("http://localhost:5000/api/me", {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (!res.ok) throw new Error("Failed to fetch profile");
@@ -73,7 +69,7 @@ const Profile = () => {
       setForm(data);
       setPreviewPic(
         data.profilePic
-          ? `http://https://playconnect-backend.vercel.app/${data.profilePic}`
+          ? `http://localhost:5000${data.profilePic}`
           : null
       );
     } catch (err) {
@@ -107,7 +103,7 @@ const Profile = () => {
       });
 
       const res = await fetch(
-        "https://playconnect-backend.vercel.app/api/update",
+        "http://localhost:5000/api/update",
         {
           method: "PUT",
           headers: { Authorization: `Bearer ${token}` },
@@ -119,9 +115,9 @@ const Profile = () => {
 
       const updated = await res.json();
 
-      // ✅ Fix: Always store full URL for profilePic
+      //  Fix: Always store full URL for profilePic
       const profilePicURL = updated.user.profilePic
-        ? `http://https://playconnect-backend.vercel.app/${updated.user.profilePic}`
+        ? `http://localhost:5000${updated.user.profilePic}`
         : null;
 
       const updatedUser = { ...updated.user, profilePic: profilePicURL };
@@ -140,10 +136,10 @@ const Profile = () => {
       );
 
       setEditMode(false);
-      alert("✅ Profile updated successfully!");
+      alert(" Profile updated successfully!");
     } catch (err) {
       console.error(err);
-      alert("❌ Update failed!");
+      alert(" Update failed!");
     }
   };
 

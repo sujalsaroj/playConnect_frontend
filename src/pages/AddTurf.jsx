@@ -75,7 +75,7 @@ const AddTurf = () => {
       });
 
       const res = await fetch(
-        "https://playconnect-backend.vercel.app/api/turf/add",
+        "http://localhost:5000/api/turf/add",
         {
           method: "POST",
           headers: { Authorization: `Bearer ${token}` },
@@ -86,7 +86,7 @@ const AddTurf = () => {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to add turf");
 
-      alert("✅ Turf added successfully!");
+      alert("Turf added successfully!");
       setFormData({
         name: "",
         sports: "",
@@ -114,9 +114,8 @@ const AddTurf = () => {
   return (
     <div className="p-8 mt-10 mb-10 max-w-3xl mx-auto bg-white rounded-xl shadow-md">
       <h2 className="text-3xl font-bold mb-8 text-green-700">
-        ➕ Add New Turf
+       Add New Turf
       </h2>
-
       <form onSubmit={handleSubmit} className="grid gap-6">
         {/* Photos Upload */}
         <div>
@@ -314,5 +313,4 @@ const AddTurf = () => {
     </div>
   );
 };
-
 export default AddTurf;

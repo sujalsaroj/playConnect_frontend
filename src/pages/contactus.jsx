@@ -18,7 +18,7 @@ const Contact = () => {
 
     try {
       const res = await fetch(
-        "https://playconnect-backend.vercel.app/api/contact",
+        "http://localhost:5000/api/contact",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -42,7 +42,7 @@ const Contact = () => {
         setStatus("❌ " + result.message);
       }
     } catch (error) {
-      console.error("Error:", error);
+      
       setStatus("❌ Something went wrong. Try again!");
     }
   };

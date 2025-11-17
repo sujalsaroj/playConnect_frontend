@@ -9,12 +9,9 @@ const ViewConnections = () => {
   const fetchConnections = async () => {
     setLoading(true);
     try {
-      const res = await fetch(
-        "https://playconnect-backend.vercel.app/api/connections/my",
-        {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        }
-      );
+      const res = await fetch("http://localhost:5000/api/connections/my", {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
 
       if (!res.ok) throw new Error("Failed to fetch connections");
       const data = await res.json();
@@ -59,7 +56,7 @@ const ViewConnections = () => {
                     📅 Date: {new Date(conn.date).toLocaleString()}
                   </p>
                   <p className="text-gray-600">
-                    🙋‍♂️ Players: {conn.players.length}/{conn.maxPlayers}
+                    Players: {conn.players.length}/{conn.maxPlayers}
                   </p>
                   <p
                     className={`font-medium ${

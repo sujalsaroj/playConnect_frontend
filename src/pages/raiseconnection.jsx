@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import loaderGif from "../loader/loading.gif";
+
 const RaiseConnection = () => {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -8,6 +9,8 @@ const RaiseConnection = () => {
     time: "",
     playersNeeded: "",
     turfLocation: "",
+    contactNumber: "",
+    email: "",
     message: "",
   });
 
@@ -15,37 +18,58 @@ const RaiseConnection = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  //  Email validation function
+  const validateEmail = (email) => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+
+    // Basic validations
+    if (!validateEmail(formData.email)) {
+      alert(" Please enter a valid email address");
+      setLoading(false);
+      return;
+    }
+
+    if (formData.contactNumber.length < 10) {
+      alert(" Please enter a valid contact number (10 digits)");
+      setLoading(false);
+      return;
+    }
+
     try {
       const token = localStorage.getItem("token");
       if (!token) {
         setLoading(false);
-        return alert("⚠️ Please login first!");
+        return alert(" Please login first!");
       }
 
-      const res = await fetch(
-        "https://playconnect-backend.vercel.app/api/connections",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            turf: formData.turfLocation,
-            date: `${formData.date}T${formData.time}`,
-            maxPlayers: formData.playersNeeded,
-            sport: formData.sport,
-            message: formData.message,
-          }),
-        }
-      );
+      const res = await fetch("http://localhost:5000/api/connections", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          turf: formData.turfLocation,
+          date: `${formData.date}T${formData.time}`,
+          maxPlayers: formData.playersNeeded,
+          sport: formData.sport,
+          message: formData.message,
+          contactNumber: formData.contactNumber,
+          email: formData.email,
+        }),
+      });
+
       setLoading(false);
       if (!res.ok) throw new Error("Failed to raise connection");
-      const data = await res.json();
-      alert("✅ Connection Raised Successfully!");
+      await res.json();
+
+      alert("Connection Raised Successfully!");
 
       setFormData({
         sport: "",
@@ -53,11 +77,13 @@ const RaiseConnection = () => {
         time: "",
         playersNeeded: "",
         turfLocation: "",
+        contactNumber: "",
+        email: "",
         message: "",
       });
     } catch (err) {
       console.error(err);
-      alert("❌ Failed to raise connection");
+      alert(" Failed to raise connection");
       setLoading(false);
     }
   };
@@ -79,6 +105,7 @@ const RaiseConnection = () => {
           🔊 Raise a Connection
         </h2>
 
+        {/* Sport */}
         <label className="block mb-2 font-medium">Sport</label>
         <select
           name="sport"
@@ -87,13 +114,14 @@ const RaiseConnection = () => {
           className="w-full mb-4 p-2 border rounded"
           required
         >
-          <option value="">--Choose Sport--</option>
+          <option value="">Choose Sport</option>
           <option value="Cricket">Cricket</option>
           <option value="Football">Football</option>
           <option value="Badminton">Badminton</option>
           <option value="Basketball">Basketball</option>
         </select>
 
+        {/* Date */}
         <label className="block mb-2 font-medium">Date</label>
         <input
           type="date"
@@ -104,6 +132,7 @@ const RaiseConnection = () => {
           required
         />
 
+        {/* Time */}
         <label className="block mb-2 font-medium">Time</label>
         <input
           type="time"
@@ -114,6 +143,7 @@ const RaiseConnection = () => {
           required
         />
 
+        {/* Players */}
         <label className="block mb-2 font-medium">Players Needed</label>
         <input
           type="number"
@@ -125,6 +155,7 @@ const RaiseConnection = () => {
           required
         />
 
+        {/* Turf */}
         <label className="block mb-2 font-medium">Turf Location</label>
         <input
           type="text"
@@ -136,6 +167,31 @@ const RaiseConnection = () => {
           required
         />
 
+        {/* Contact Number */}
+        <label className="block mb-2 font-medium">Contact Number</label>
+        <input
+          type="tel"
+          name="contactNumber"
+          value={formData.contactNumber}
+          onChange={handleChange}
+          className="w-full mb-4 p-2 border rounded"
+          placeholder="Enter your contact number"
+          required
+        />
+
+        {/* Email */}
+        <label className="block mb-2 font-medium">Email</label>
+        <input
+          type="email"
+          name="email"
+          value={formData.email}
+          onChange={handleChange}
+          className="w-full mb-4 p-2 border rounded"
+          placeholder="Enter your email"
+          required
+        />
+
+        {/* Message */}
         <label className="block mb-2 font-medium">Message (optional)</label>
         <textarea
           name="message"
@@ -155,5 +211,4 @@ const RaiseConnection = () => {
     </div>
   );
 };
-
 export default RaiseConnection;

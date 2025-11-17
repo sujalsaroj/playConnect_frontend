@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import loaderGif from "../loader/loading.gif";
+import { FaTrash } from "react-icons/fa"; //  Import delete icon
 
 const JoinConnection = () => {
   const [connections, setConnections] = useState([]);
@@ -15,12 +16,9 @@ const JoinConnection = () => {
   const fetchConnections = async () => {
     setLoading(true);
     try {
-      const res = await fetch(
-        "https://playconnect-backend.vercel.app/api/connections/open",
-        {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        }
-      );
+      const res = await fetch("http://localhost:5000/api/connections/open", {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
       if (!res.ok) throw new Error("Failed to fetch connections");
       const data = await res.json();
       setConnections(data);
@@ -31,11 +29,37 @@ const JoinConnection = () => {
     }
   };
 
+  //  DELETE connection
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this connection?"))
+      return;
+
+    setLoading(true);
+    try {
+      const res = await fetch(`http://localhost:5000/api/connections/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      const data = await res.json();
+      if (!res.ok)
+        throw new Error(data.message || "Failed to delete connection");
+
+      alert("Connection deleted successfully!");
+      fetchConnections(); //  Refresh after delete
+    } catch (err) {
+      alert(` ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleJoin = async (id) => {
     setLoading(true);
     try {
       const res = await fetch(
-        `https://playconnect-backend.vercel.app/api/connections/${id}/join`,
+        `http://localhost:5000/api/connections/${id}/join`,
         {
           method: "POST",
           headers: {
@@ -46,13 +70,15 @@ const JoinConnection = () => {
       );
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Failed to join connection");
-      alert("🎉 Joined Successfully!");
+      alert(" Joined Successfully!");
       fetchConnections();
     } catch (err) {
-      alert(`❌ ${err.message}`);
+      alert(` ${err.message}`);
+    } finally {
       setLoading(false);
     }
   };
+
   if (loading) {
     return (
       <div className="fixed inset-0 flex justify-center items-center bg-white z-50">
@@ -60,49 +86,84 @@ const JoinConnection = () => {
       </div>
     );
   }
+
   return (
     <div className="p-6">
-      <h2 className="text-2xl font-bold mb-4">🤝 Join a Connection</h2>
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-2xl font-bold mb-4 text-green-700">
+          🤝 Join a Connection
+        </h2>
+      </div>
       {connections.length === 0 ? (
         <p>No open connections available.</p>
       ) : (
         connections.map((conn) => {
           const joined = conn.players.some((p) => p._id === currentUser?._id);
+
           return (
             <div
               key={conn._id}
-              className="bg-white border p-4 rounded shadow-md mb-4 hover:shadow-lg transition"
+              className="bg-white border p-5 rounded-xl shadow-md mb-5 hover:shadow-lg transition relative"
             >
-              <h3 className="text-lg font-semibold">{conn.turf}</h3>
-              <p>📅 Date: {new Date(conn.date).toLocaleString()}</p>
+              {/* 🗑 Delete button (top-right) */}
+              <button
+                onClick={() => handleDelete(conn._id)}
+                className="absolute top-3 right-3 text-red-600 hover:text-red-800"
+              >
+                <FaTrash />
+              </button>
+              <h3 className="text-xl font-semibold mb-2 text-green-700">
+                {conn.sport} Match
+              </h3>
               <p>
-                🙋‍♂️ Players Joined: {conn.players.length}/{conn.maxPlayers}
+                <b>Turf:</b> {conn.turf}
               </p>
-              <div className="flex gap-2 mt-2">
+              <p>
+                <b>Date:</b> {new Date(conn.date).toLocaleDateString()}{" "}
+                <b>🕒 Time:</b>{" "}
+                {new Date(conn.date).toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </p>
+              <p>
+                <b>Players Joined:</b> {conn.players.length}/{conn.maxPlayers}
+              </p>
+              <p>
+                <b>Location:</b> {conn.turf}
+              </p>
+              <p>
+                <b>Contact:</b> {conn.contactNumber}
+              </p>
+              <p>
+                <b>Email:</b> {conn.email}
+              </p>
+              <p>
+                <b>Message:</b> {conn.message}
+              </p>
+              <div className="flex gap-2 mt-3">
                 <button
                   disabled={joined || conn.status === "filled"}
                   className={`px-4 py-1 rounded text-white ${
-                    joined || conn.status === "filled"
+                    joined
+                      ? "bg-blue-500 cursor-not-allowed"
+                      : conn.status === "filled"
                       ? "bg-gray-400 cursor-not-allowed"
                       : "bg-green-600 hover:bg-green-700"
                   }`}
                   onClick={() => handleJoin(conn._id)}
                 >
                   {joined
-                    ? "Joined ✅"
+                    ? "Joined"
                     : conn.status === "filled"
                     ? "Full"
                     : "Join Now"}
                 </button>
-                {joined && (
-                  <button className="bg-blue-500 text-white px-3 py-1 rounded">
-                    Chat 💬
-                  </button>
-                )}
               </div>
               {conn.players.length > 0 && (
-                <div className="mt-2 text-sm text-gray-700">
-                  <b>Players:</b> {conn.players.map((p) => p.name).join(", ")}
+                <div className="mt-3 text-sm text-gray-700">
+                  <b>Players:</b>{" "}
+                  {conn.players.map((p) => p.name).join(", ") || "No players"}
                 </div>
               )}
             </div>

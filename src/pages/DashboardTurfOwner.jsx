@@ -7,11 +7,11 @@ const DashboardTurfOwner = () => {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // ✅ Fetch bookings for owner's turfs
+  // Fetch bookings for owner's turfs
   const fetchBookings = async () => {
     try {
       const res = await fetch(
-        "https://playconnect-backend.vercel.app/api/bookings/owner-bookings",
+        "http://localhost:5000/api/bookings/owner-bookings",
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         }
@@ -31,11 +31,11 @@ const DashboardTurfOwner = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // ✅ Confirm a booking
+  // Confirm booking
   const confirmBooking = async (id) => {
     try {
       const res = await fetch(
-        `https://playconnect-backend.vercel.app/api/bookings/confirm/${id}`,
+        `http://localhost:5000/api/bookings/confirm/${id}`,
         {
           method: "POST",
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -61,18 +61,13 @@ const DashboardTurfOwner = () => {
         <img src={loaderGif} alt="Loading..." className="w-30 h-30" />
       </div>
     );
+
   return (
     <div className="min-h-screen flex bg-gray-100">
       {/* Sidebar */}
       <aside className="w-64 bg-green-700 text-white p-6 space-y-6">
         <h2 className="text-2xl font-bold">Turf Owner</h2>
         <nav className="flex flex-col gap-4">
-          <button
-            className="text-left hover:bg-green-600 px-4 py-2 rounded"
-            onClick={() => navigate("/dashboard")}
-          >
-            🏠 Dashboard
-          </button>
           <button
             className="text-left hover:bg-green-600 px-4 py-2 rounded"
             onClick={() => navigate("/addturf")}
@@ -90,7 +85,7 @@ const DashboardTurfOwner = () => {
 
       {/* Main Content */}
       <main className="flex-1 p-8">
-        <h1 className="text-3xl font-bold mb-6">🏟️ Turf Owner Dashboard</h1>
+        <h1 className="text-3xl font-bold mb-6">Turf Owner Dashboard</h1>
 
         <section>
           <h2 className="text-xl font-semibold mb-4">📅 Booking List</h2>
@@ -99,30 +94,47 @@ const DashboardTurfOwner = () => {
               bookings.map((b) => (
                 <li
                   key={b._id}
-                  className="border-b last:border-b-0 py-2 flex justify-between items-center"
+                  className="border-b last:border-b-0 py-3 flex justify-between items-start flex-col sm:flex-row sm:items-center"
                 >
-                  <span>
-                    <strong>{b.turfId?.name || "Turf"}</strong> - {b.date} at{" "}
-                    {b.slot} - Status:{" "}
-                    <span
-                      className={`font-medium ${
-                        b.status === "Pending"
-                          ? "text-yellow-600"
-                          : b.status === "Confirmed"
-                          ? "text-blue-600"
-                          : b.status === "Cancelled"
-                          ? "text-red-500"
-                          : "text-green-600"
-                      }`}
-                    >
-                      {b.status}
-                    </span>
-                  </span>
+                  <div>
+                    <p>
+                      <strong>🏟 Turf:</strong> {b.turfId?.name || "Turf"}
+                    </p>
+                    <p>
+                      <strong>📅 Date:</strong> {b.date} &nbsp;|&nbsp;
+                      <strong>🕒 Slot:</strong> {b.slot}
+                    </p>
+                    <p>
+                      <strong>👤 Name:</strong> {b.userName || "N/A"}
+                    </p>
+                    <p>
+                      <strong>📞 Phone:</strong> {b.userPhone || "N/A"}
+                    </p>
+                    <p>
+                      <strong>📧 Email:</strong> {b.userEmail || "N/A"}
+                    </p>
+                    <p>
+                      <strong>Status:</strong>{" "}
+                      <span
+                        className={`font-medium ${
+                          b.status === "Pending"
+                            ? "text-yellow-600"
+                            : b.status === "Confirmed"
+                            ? "text-blue-600"
+                            : b.status === "Cancelled"
+                            ? "text-red-500"
+                            : "text-green-600"
+                        }`}
+                      >
+                        {b.status}
+                      </span>
+                    </p>
+                  </div>
 
                   {b.status === "Pending" && (
                     <button
                       onClick={() => confirmBooking(b._id)}
-                      className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600"
+                      className="bg-green-500 text-white px-4 py-2 rounded mt-3 sm:mt-0 hover:bg-green-600"
                     >
                       Confirm
                     </button>
