@@ -73,6 +73,9 @@ const Register = () => {
         confirmPassword: "",
         role: "player",
       });
+      setTimeout(() => {
+        window.location.href = "https://play-connect-frontend.vercel.app/login";
+      }, 2000);
     } catch (err) {
       setError("Server not responding. Please try later.");
       setLoading(false);
