@@ -63,9 +63,7 @@ const Register = () => {
       }
 
       //  Show success message
-      setSuccess(
-        "Registration successful! Please check your email to verify your account."
-      );
+      setSuccess("Registration successful! Redirecting to login...");
 
       // clear the form
       setFormData({
