@@ -128,7 +128,7 @@ export default function Navbar() {
   );
 }
 
-// ✅ Updated Role-based NavLinks
+//  Updated Role-based NavLinks
 function NavLinks({ user, mobile = false, closeMenu }) {
   const className = `block py-2 px-3 hover:bg-green-800 rounded ${
     mobile ? "text-lg" : ""
@@ -181,7 +181,7 @@ function NavLinks({ user, mobile = false, closeMenu }) {
   );
 }
 
-// ✅ Auth Links (Login/Register)
+//  Auth Links (Login/Register)
 function AuthLinks() {
   return (
     <div className="flex items-center space-x-3">
@@ -201,7 +201,7 @@ function AuthLinks() {
   );
 }
 
-// ✅ User Dropdown
+//  User Dropdown
 function UserDropdown({ user, onLogout, mobile = false }) {
   const [open, setOpen] = useState(false);
 
